@@ -24,3 +24,8 @@ docker run --rm -it -v <volumen_mysql>:/var/lib/mysql mysql:8.0 --skip-grant-tab
   # Arrancar el contenedor original
   docker start <contenedor>
 
+
+docker exec -it mysql-reset mysql -u root -e "
+  FLUSH PRIVILEGES;
+  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Privacy2024*+';
+  FLUSH PRIVILEGES;"
