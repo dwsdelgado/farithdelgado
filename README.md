@@ -4,3 +4,23 @@ db-backup-nfs:/originadores/DATABASE /DATABASE nfs rw,hard,noatime,nodiratime,_n
 
 ###### Scrip
 docker exec -i <contenedor> mysql -u root -p -e "ALTER USER 'us.backup'@'localhost' IDENTIFIED BY 'Privacy2024*+'; FLUSH PRIVILEGES;"
+
+docker run --rm -it -v <volumen_mysql>:/var/lib/mysql mysql:8.0 --skip-grant-table
+
+# Detener el contenedor                                                                                                                                                                     
+  docker stop <contenedor>                                                                                                                                                                    
+                                                                                                                                                                                              
+  # Arrancar temporal sin autenticación
+  docker run --rm -d --name mysql-reset \                                                                                                                                                     
+    -v landing_mysql_data:/var/lib/mysql \
+    mysql:8.0 --skip-grant-tables --skip-networking
+
+  # Entrar y resetear password
+  docker exec -it mysql-reset mysql -u root -e "FLUSH PRIVILEGES; ALTER USER 'root'@'localhost' IDENTIFIED BY 'Privacy2024*+'; FLUSH PRIVILEGES;"
+
+  # Detener el temporal
+  docker stop mysql-reset
+
+  # Arrancar el contenedor original
+  docker start <contenedor>
+
